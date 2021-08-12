@@ -96,6 +96,7 @@
 
 <script>
 import store from "../store/index";
+import { v4 as uuid } from "uuid";
 export default {
 	data: () => ({
 		items: [],
@@ -110,6 +111,7 @@ export default {
 
 	methods: {
 		createHighlight() {
+			let id = uuid();
 			let groupName;
 			if (this.newGroup) {
 				groupName = this.newGroupName;
@@ -117,6 +119,7 @@ export default {
 			} else groupName = this.selected;
 
 			store.commit("createHighlight", {
+				id,
 				content: this.content,
 				group: groupName,
 				color: this.colors[this.selectedColor],

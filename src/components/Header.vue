@@ -2,7 +2,7 @@
 	<div>
 		<div class="main-header">
 			<span>Messaging/Affinity Map</span>
-			<v-btn color="secondary" @click="$store.comit('toggleGroupMode')"
+			<v-btn color="secondary" @click="$store.commit('toggleGroupMode')"
 				>Group Highlights</v-btn
 			>
 		</div>
