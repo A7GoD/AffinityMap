@@ -36,12 +36,19 @@ import Highlight from "../components/Highlight.vue";
 export default {
 	components: { Highlight, Bucket },
 	data: () => ({
-		highlights: [],
-		groups: [],
+		// highlights: [],
+		// groups: [],
 		dragItem: null,
 	}),
 
-	computed: {},
+	computed: {
+		highlights() {
+			return this.$store.state.highlights;
+		},
+		groups() {
+			return this.$store.state.groups;
+		},
+	},
 
 	methods: {
 		beginTransfer(data) {
@@ -51,12 +58,12 @@ export default {
 	},
 
 	watch: {
-		"$store.state.highlights"() {
-			this.highlights = this.$store.state.highlights;
-		},
-		"$store.state.groups"() {
-			this.groups = this.$store.state.groups;
-		},
+		// "$store.state.highlights"() {
+		// 	this.highlights = this.$store.state.highlights;
+		// },
+		// "$store.state.groups"() {
+		// 	this.groups = this.$store.state.groups;
+		// },
 	},
 };
 </script>
@@ -79,7 +86,8 @@ export default {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	justify-content: flex-start;
+	max-width: 1366px;
+	justify-content: center;
 	width: 100%;
 }
 

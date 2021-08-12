@@ -22,6 +22,13 @@ const store = new Vuex.Store({
   },
 
   mutations: {
+    delete(ctx, { id, group }) {
+      ctx.highlights = ctx.highlights.filter(x => x.id !== id)
+
+      const newArray = ctx.groupedData[group].filter(x => x.id !== id)
+      ctx.groupedData = { ...ctx.groupedData, [group]: [...newArray] };
+
+    },
     createHighlight(ctx, payload) {
       ctx.highlights = [...ctx.highlights, { ...payload }]
 
@@ -43,25 +50,31 @@ const store = new Vuex.Store({
       ctx.groupedData = { ...ctx.groupedData, [group]: [...array] }
     },
 
-    edit(ctx, { group, oldGroup, content, color, id }) {
+    edit(ctx, { group, oldGroup, content, color, id, date }) {
       const newHighlights = ctx.highlights.map(x => {
         if (x.id === id) {
-          return { group: group, id, color: color, content: content }
+          return { group: group, id, color: color, content: content, date }
         } else return x;
       });
+
       ctx.highlights = newHighlights;
 
-      const oldArray = ctx.groupedData[oldGroup].filter(x => x.id != id)
-
-      if (!(group in ctx.groupedData)) {
-        ctx.groupedData[group] = [];
-        let groups = ctx.groups;
-        groups.push(group)
-        ctx.groups = [...groups]
+      if (oldGroup !== group) {
+        var oldArray = ctx.groupedData[oldGroup].filter(x => x.id !== id);
+        if (!(group in ctx.groupedData)) {
+          ctx.groupedData[group] = [];
+          let groups = ctx.groups;
+          groups.push(group)
+          ctx.groups = [...groups]
+        }
+        var newArray = ctx.groupedData[group];
+        newArray.push({ group: group, id, color: color, content: content, date })
+        ctx.groupedData = { ...ctx.groupedData, [oldGroup]: [...oldArray], [group]: [...newArray] };
+      } else {
+        newArray = ctx.groupedData[group].map(x => { if (x.id !== id) return x; else return { group: group, id, color: color, content: content, date } })
+        ctx.groupedData = { ...ctx.groupedData, [group]: [...newArray] };
       }
-      const newArray = ctx.groupedData[group]
-      newArray.push({ group: group, id, color: color, content: content })
-      ctx.groupedData = { ...ctx.groupedData, [oldGroup]: [...oldArray], [group]: [...newArray] };
+
 
     }
 

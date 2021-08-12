@@ -11,12 +11,11 @@
 		</template>
 
 		<v-card>
-			<v-toolbar :color="color"><h2>Edit Highlight</h2></v-toolbar>
+			<v-toolbar :color="color" class="elevation-1"
+				><h2>Edit Highlight</h2></v-toolbar
+			>
 			<div class="dialog-body">
-				<v-row
-					class="d-flex align-center select-group"
-					:style="{ marginBottom: '8px' }"
-				>
+				<v-row class="d-flex align-center select-group">
 					<transition name="slide" mode="out-in">
 						<v-select
 							v-if="!newGroup"
@@ -101,12 +100,14 @@ export default {
 	}),
 	methods: {
 		updateHighlight() {
+			let date = new Date();
 			store.commit("edit", {
 				id: this.id,
 				content: this.content,
 				oldGroup: this.group,
 				group: this.newGroup ? this.newGroupName : this.selected,
 				color: this.colors[this.selectedColor],
+				date,
 			});
 			this.show = false;
 		},
@@ -138,8 +139,13 @@ export default {
 	padding: 8px 24px;
 	margin: 16px 0px;
 }
+
+.dialog-body > * {
+	margin: 16px;
+}
+
 .select-group > :first-child {
-	max-width: 550px;
+	max-width: 350px;
 	margin-right: 8px;
 }
 
@@ -155,7 +161,7 @@ export default {
 .colors {
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 12px;
+	/* margin-bottom: 12px; */
 }
 .color-unselected {
 	box-sizing: border-box;

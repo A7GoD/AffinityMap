@@ -17,14 +17,11 @@
 		<v-card class="elevation-1">
 			<v-card-text>
 				<div class="dialog-body">
-					<v-row :style="{ marginBottom: '8px' }">
+					<v-row>
 						New Highlight
 					</v-row>
 
-					<v-row
-						class="d-flex align-center select-group"
-						:style="{ marginBottom: '8px' }"
-					>
+					<v-row class="d-flex align-center select-group">
 						<transition name="slide" mode="out-in">
 							<v-select
 								v-if="!newGroup"
@@ -112,6 +109,7 @@ export default {
 	methods: {
 		createHighlight() {
 			let id = uuid();
+			let date = new Date();
 			let groupName;
 			if (this.newGroup) {
 				groupName = this.newGroupName;
@@ -120,6 +118,7 @@ export default {
 
 			store.commit("createHighlight", {
 				id,
+				date,
 				content: this.content,
 				group: groupName,
 				color: this.colors[this.selectedColor],
@@ -151,6 +150,21 @@ export default {
 .dialog-body {
 	padding: 8px 24px;
 }
+
+.dialog-body > :first-child {
+	font-size: 18px;
+	font-weight: 700;
+	margin-bottom: 16px;
+}
+
+.dialog-body > :last-child {
+	margin-bottom: 0px;
+}
+
+.dialog-body > * {
+	margin-bottom: 24px;
+}
+
 .select-group > :first-child {
 	max-width: 200px;
 	margin-right: 8px;
@@ -161,14 +175,13 @@ export default {
 }
 
 .rotate {
-	transform: rotateZ(45deg);
+	transform: rotateZ(135deg);
 	transition: all 300ms ease;
 }
 
 .colors {
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 12px;
 }
 .color-unselected {
 	box-sizing: border-box;
@@ -181,10 +194,10 @@ export default {
 .color-selected {
 	box-sizing: border-box;
 	border-radius: 50%;
-	border-width: 2px;
-	border-style: dashed;
+	border-width: 3px;
+	border-style: solid;
 	stroke-dashoffset: 10;
-	filter: brightness(1.2);
+	filter: brightness(1.1);
 	height: 32px;
 	width: 32px;
 	cursor: pointer;
@@ -192,7 +205,7 @@ export default {
 }
 
 .slide-enter-active {
-	transition: all 300ms ease;
+	transition: all 200ms ease;
 	position: relative;
 }
 
@@ -202,7 +215,7 @@ export default {
 }
 .slide-leave-active {
 	position: relative;
-	transition: all 300ms ease;
+	transition: all 200ms ease;
 }
 
 .slide-leave-to {

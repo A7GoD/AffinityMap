@@ -34,7 +34,11 @@
 				:id="id"
 			/>
 			<v-btn fab x-small depressed>
-				<v-icon :color="highlightColor">mdi-delete</v-icon>
+				<v-icon
+					@click="() => $store.commit('delete', { id, group })"
+					:color="highlightColor"
+					>mdi-delete</v-icon
+				>
 			</v-btn>
 			<v-btn
 				fab

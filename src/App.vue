@@ -1,10 +1,10 @@
 <template>
-  <div id="app">
-    <v-app>
-      <Header />
-      <AffinityMap />
-    </v-app>
-  </div>
+	<div id="app">
+		<v-app>
+			<Header />
+			<AffinityMap />
+		</v-app>
+	</div>
 </template>
 
 <script>
@@ -13,16 +13,16 @@ import AffinityMap from "./views/AffinityMap.vue";
 
 // import Header from "./components/Header.vue"
 export default {
-  name: "App",
-  components: { Header, AffinityMap },
-  data: () => ({
-    //
-  }),
+	name: "App",
+	components: { Header, AffinityMap },
+	data: () => ({
+		//
+	}),
 };
 </script>
 <style>
 #app {
-  height: 100%;
-  width: 100%;
+	height: 100%;
+	width: 100%;
 }
 </style>
