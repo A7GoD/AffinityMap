@@ -1,28 +1,28 @@
 <template>
-	<div class="affinity-map d-flex">
+	<div class="affinity-map d-flex" @dragover.prevent @dragleave.prevent>
 		<div :style="{ width: '100%' }" class="d-flex justify-center">
 			<div
 				v-if="!$store.state.groupMode"
 				class="ungrouped-highlights-container"
 			>
-				<Highlight
-					class="highlight-card"
-					v-for="(note, idx) in highlights"
-					:key="idx"
-					:id="note.id"
-					:group="note.group"
-					:content="note.content"
-					:highlightColor="note.color"
-				/>
+				<div v-for="(note, idx) in highlights" :key="idx">
+					<Highlight
+						class="highlight-card"
+						:id="note.id"
+						:group="note.group"
+						:content="note.content"
+						:highlightColor="note.color"
+					/>
+				</div>
 			</div>
 			<div v-else class="grouped-highlights-container">
 				<Bucket
+					v-for="group in groups"
 					v-on:dragging="(event) => (dragItem = event)"
 					v-on:dropped="(event) => beginTransfer(event)"
-					v-for="group in groups"
-					:key="group"
 					:group="group"
 					:highlights="highlights"
+					:key="group"
 				/>
 			</div>
 		</div>
@@ -40,6 +40,8 @@ export default {
 		groups: [],
 		dragItem: null,
 	}),
+
+	computed: {},
 
 	methods: {
 		beginTransfer(data) {
@@ -70,19 +72,24 @@ export default {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: flex-start;
-	width: fit-content;
+	width: 1100px;
 	max-width: 1100px;
 }
 .grouped-highlights-container {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	flex-wrap: wrap;
-	justify-content: space-between;
+	justify-content: flex-start;
 	width: 100%;
-	max-width: 1100px;
+}
+
+.container {
+	height: max-content;
+	width: 46%;
 }
 
 .highlight-card {
 	margin: 16px 16px;
+	position: relative;
 }
 </style>

@@ -1,38 +1,36 @@
 <template>
-	<v-card color="#eceaec" class="bucket" outlined depressed>
+	<v-card
+		@dragenter.prevent
+		@drag.prevent
+		@dragleave.prevent
+		color="#eceaec"
+		class="bucket"
+		outlined
+		depressed
+	>
 		<div class="d-flex justify-center bucket-title">
 			<div>{{ group }}</div>
 		</div>
-		<draggable class="bucket-content" v-model="filteredHighlights">
-			<div v-for="(note, idx) in filteredHighlights" :key="idx">
-				<Highlight
-					class="highlight-card"
-					:content="note.content"
-					:highlightColor="note.color"
-					:id="note.id"
-					:group="note.group"
-				/>
-			</div>
-		</draggable>
+
+		<div v-for="(note, idx) in filteredHighlights" :key="idx">
+			<Highlight
+				class="highlight-card"
+				:content="note.content"
+				:highlightColor="note.color"
+				:id="note.id"
+				:group="note.group"
+			/>
+		</div>
 	</v-card>
 </template>
 
 <script>
-import draggable from "vuedraggable";
 import Highlight from "./Highlight.vue";
 export default {
-	components: { Highlight, draggable },
+	components: { Highlight },
 	props: ["group", "highlights"],
 	data: () => ({}),
-	methods: {
-		checkDrop(x) {
-			this.draggedItem = x;
-			this.$emit("dragging", { id: x, oldGroup: this.group });
-		},
-		dropItem() {
-			this.$emit("dropped", this.group);
-		},
-	},
+	methods: {},
 	computed: {
 		filteredHighlights: {
 			get() {
@@ -52,8 +50,10 @@ export default {
 <style>
 .bucket {
 	margin: 8px 8px;
-	min-width: 48%;
-	width: 45%;
+	min-width: 500px;
+	/* min-width: 48%; */
+	/* max-width: 45%; */
+	width: max-content;
 }
 
 .bucket-title {

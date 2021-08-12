@@ -1,12 +1,21 @@
 <template>
 	<v-card
+		draggable
 		class="highlight"
 		:color="highlightColor"
 		:elevation="0"
-		@click="togglePopups = !togglePopups"
+		@dragstart="getClick"
+		@dragend="getCoordinates"
+		:style="
+			!$store.state.groupMode && {
+				position: position,
+				left: leftVal,
+				top: topVal,
+			}
+		"
 	>
 		<v-chip
-			v-if="group"
+			v-if="!$store.state.groupMode"
 			class="elevation-0 group-name"
 			text-color="white"
 			color="#666289"
@@ -27,6 +36,21 @@
 			<v-btn fab x-small depressed>
 				<v-icon :color="highlightColor">mdi-delete</v-icon>
 			</v-btn>
+			<v-btn
+				fab
+				x-small
+				depressed
+				v-if="position !== 'relative'"
+				@click="
+					() => {
+						position = 'relative';
+						leftVal = '0px';
+						topVal = '0px';
+					}
+				"
+			>
+				<v-icon :color="highlightColor">mdi-undo</v-icon>
+			</v-btn>
 		</div>
 	</v-card>
 </template>
@@ -38,10 +62,42 @@ export default {
 	props: ["group", "content", "highlightColor", "id"],
 	data: () => ({
 		togglePopups: false,
+		position: "relative",
+		leftVal: "initial",
+		topVal: "initial",
+		clickLeft: "null",
+		clickTop: "null",
 	}),
 	methods: {
-		startDrag(e) {
-			this.$emit("dragEvent", e);
+		getCoordinates(e) {
+			if (!this.$store.state.groupMode) {
+				this.position = "absolute";
+				let leftOffset =
+					this.clickLeft.pageX - this.clickLeft.targetLeft;
+				let topOffset = this.clickTop.pageY - this.clickTop.targetTop;
+				this.leftVal = `${e.pageX - leftOffset}px`;
+				this.topVal = `${e.pageY - topOffset}px`;
+			}
+		},
+
+		getClick(e) {
+			if (!this.$store.state.groupMode) {
+				let top = 0;
+				let left = 0;
+				let element = e.target;
+
+				do {
+					top += element.offsetTop || 0;
+					left += element.offsetLeft || 0;
+					element = element.offsetParent;
+				} while (element);
+
+				this.clickLeft = {
+					pageX: e.pageX,
+					targetLeft: left,
+				};
+				this.clickTop = { pageY: e.pageY, targetTop: top };
+			}
 		},
 	},
 };
@@ -74,9 +130,12 @@ export default {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	height: 70px;
 	top: 0px;
 	left: 100%;
 	transform: translate(-120%, 20%);
+}
+
+.popups > * {
+	margin-bottom: 8px;
 }
 </style>
