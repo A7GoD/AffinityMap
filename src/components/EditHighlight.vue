@@ -20,6 +20,7 @@
 						<v-select
 							v-if="!newGroup"
 							dense
+							class="selectGroup"
 							:items="items"
 							label="Select a group"
 							v-model="selected"
@@ -145,7 +146,7 @@ export default {
 }
 
 .select-group > :first-child {
-	max-width: 350px;
+	max-width: 250px;
 	margin-right: 8px;
 }
 
