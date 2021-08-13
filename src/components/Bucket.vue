@@ -10,7 +10,7 @@
 		:class="{ invis: !filtered }"
 	>
 		<div class="d-flex justify-center bucket-title">
-			<div>{{ group }}</div>
+			<div>{{ group !== "null" ? group : "ungrouped" }}</div>
 		</div>
 		<div class="bucket-body">
 			<div
@@ -24,6 +24,7 @@
 					:highlightColor="note.color"
 					:id="note.id"
 					:group="note.group"
+					:user="note.user"
 				/>
 			</div>
 		</div>

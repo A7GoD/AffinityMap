@@ -20,6 +20,7 @@
 						:top="note.top"
 						:left="note.left"
 						:pos="note.pos"
+						:user="note.user"
 					/>
 				</div>
 			</div>

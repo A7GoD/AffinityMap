@@ -20,7 +20,7 @@
 				@click="select"
 				@click:close="remove(item)"
 			>
-				<strong>{{ item }}</strong>
+				<strong>{{ item !== "null" ? item : "Ungrouped" }}</strong>
 			</v-chip>
 		</template>
 	</v-select>
@@ -39,7 +39,10 @@ export default {
 	},
 	computed: {
 		items() {
-			return Object.keys(this.$store.state.groupedData);
+			return Object.keys(this.$store.state.groupedData).map((x) => {
+				if (x === "null") return "ungrouped";
+				else return x;
+			});
 		},
 	},
 	watch: {

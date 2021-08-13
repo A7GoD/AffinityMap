@@ -81,6 +81,15 @@
 							hide-details="auto"
 						></v-textarea>
 					</v-row>
+					<v-row>
+						<v-text-field
+							outlined
+							label="User"
+							dense
+							hide-details="auto"
+							v-model="user"
+						></v-text-field>
+					</v-row>
 				</div>
 			</v-card-text>
 			<v-card-actions class="justify-end">
@@ -103,6 +112,7 @@ export default {
 		selectedColor: 0,
 		newGroup: false,
 		newGroupName: null,
+		user: null,
 		colors: [],
 	}),
 
@@ -125,6 +135,7 @@ export default {
 				left: 0,
 				top: 0,
 				pos: "relative",
+				user: this.user,
 			});
 			this.show = false;
 		},

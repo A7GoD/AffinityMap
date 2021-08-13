@@ -44,7 +44,7 @@ const store = new Vuex.Store({
 
 		edit(
 			ctx,
-			{ group, oldGroup, content, color, id, date, top, left, pos }
+			{ group, oldGroup, content, color, id, date, top, left, pos, user }
 		) {
 			if (oldGroup !== group) {
 				var oldArray = ctx.groupedData[oldGroup].filter(
@@ -65,6 +65,7 @@ const store = new Vuex.Store({
 					top,
 					left,
 					pos,
+					user,
 				});
 
 				ctx.groupedData = {
@@ -85,6 +86,7 @@ const store = new Vuex.Store({
 							top,
 							left,
 							pos,
+							user,
 						};
 				});
 

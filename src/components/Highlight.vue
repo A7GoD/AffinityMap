@@ -27,6 +27,8 @@
 		<div class="content" color="#89f3a7">
 			{{ content }}
 		</div>
+
+		<div class="user" color="#89f3a7">- {{ user }}</div>
 		<div class="popups">
 			<EditHighlight
 				:color="highlightColor"
@@ -64,7 +66,16 @@
 import EditHighlight from "./EditHighlight.vue";
 export default {
 	components: { EditHighlight },
-	props: ["group", "content", "highlightColor", "id", "left", "top", "pos"],
+	props: [
+		"group",
+		"content",
+		"highlightColor",
+		"id",
+		"left",
+		"top",
+		"pos",
+		"user",
+	],
 	data: () => ({
 		togglePopups: false,
 		position: "relative",
@@ -93,6 +104,7 @@ export default {
 				left: this.leftVal,
 				pos: this.position,
 				content: this.content,
+				user: this.user,
 			});
 		},
 
@@ -153,7 +165,27 @@ export default {
 .content {
 	padding: 10px 8px;
 	font-size: 14px;
+	width: 90%;
+	max-height: 125px;
+	overflow-x: auto;
 }
+
+.user {
+	text-transform: capitalize;
+	position: absolute;
+	bottom: 30px;
+	left: 20px;
+	width: 70%;
+	text-overflow: ellipsis;
+	/* Required for text-overflow to do anything */
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.content::-webkit-scrollbar {
+	display: none;
+}
+
 .popups {
 	position: absolute;
 	display: flex;
