@@ -36,17 +36,24 @@ import Highlight from "../components/Highlight.vue";
 export default {
 	components: { Highlight, Bucket },
 	data: () => ({
-		// highlights: [],
-		// groups: [],
 		dragItem: null,
 	}),
 
 	computed: {
 		highlights() {
-			return this.$store.state.highlights;
+			const temp = this.$store.state.groupedData;
+			let highlights = [];
+			if (highlights) {
+				Object.keys(temp).forEach((e) => {
+					highlights = [...highlights, ...temp[e]];
+				});
+				highlights.sort((a, b) => a.date - b.date);
+				return highlights;
+			}
+			return [];
 		},
 		groups() {
-			return this.$store.state.groups;
+			return Object.keys(this.$store.state.groupedData);
 		},
 	},
 
@@ -57,14 +64,7 @@ export default {
 		},
 	},
 
-	watch: {
-		// "$store.state.highlights"() {
-		// 	this.highlights = this.$store.state.highlights;
-		// },
-		// "$store.state.groups"() {
-		// 	this.groups = this.$store.state.groups;
-		// },
-	},
+	watch: {},
 };
 </script>
 

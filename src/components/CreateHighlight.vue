@@ -137,7 +137,8 @@ export default {
 				this.colors = Object.keys(allColors).map((z) => {
 					return allColors[z];
 				});
-				this.items = store.state.groups;
+
+				this.items = Object.keys(store.state.groupedData);
 				if (this.items.length === 0) this.newGroup = true;
 				else this.newGroup = false;
 			}
