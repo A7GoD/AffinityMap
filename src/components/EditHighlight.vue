@@ -120,7 +120,6 @@ export default {
 				this.content = this.selected = this.newGroupName = null;
 				this.selectedColor = 0;
 			} else {
-				console.log(this.group);
 				this.selected = this.group;
 				this.content = this.body;
 				let allColors = store.state.colors;
