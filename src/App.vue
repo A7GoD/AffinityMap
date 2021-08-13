@@ -18,6 +18,21 @@ export default {
 	data: () => ({
 		//
 	}),
+	watch: {
+		"$store.state.groupedData"() {
+			localStorage.setItem(
+				"data",
+				JSON.stringify(this.$store.state.groupedData)
+			);
+		},
+	},
+
+	mounted() {
+		const item = localStorage.getItem("data");
+		if (item) {
+			this.$store.commit("setData", JSON.parse(item));
+		}
+	},
 };
 </script>
 <style>

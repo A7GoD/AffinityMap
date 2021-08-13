@@ -12,6 +12,7 @@ const store = new Vuex.Store({
 			green: "#89f3a7",
 		},
 
+		filteredGroups: [],
 		groupedData: {},
 
 		groupMode: false,
@@ -41,7 +42,10 @@ const store = new Vuex.Store({
 			ctx.groupedData = { ...ctx.groupedData, [group]: [...array] };
 		},
 
-		edit(ctx, { group, oldGroup, content, color, id, date }) {
+		edit(
+			ctx,
+			{ group, oldGroup, content, color, id, date, top, left, pos }
+		) {
 			if (oldGroup !== group) {
 				var oldArray = ctx.groupedData[oldGroup].filter(
 					(x) => x.id !== id
@@ -58,6 +62,9 @@ const store = new Vuex.Store({
 					color: color,
 					content: content,
 					date,
+					top,
+					left,
+					pos,
 				});
 
 				ctx.groupedData = {
@@ -74,7 +81,10 @@ const store = new Vuex.Store({
 							id,
 							color: color,
 							content: content,
-							date,
+							date: date ? date : x.date,
+							top,
+							left,
+							pos,
 						};
 				});
 
@@ -83,6 +93,13 @@ const store = new Vuex.Store({
 					[group]: [...newArray],
 				};
 			}
+		},
+		updateFilters(ctx, { filters }) {
+			ctx.filteredGroups = filters;
+		},
+
+		setData(ctx, payload) {
+			ctx.groupedData = payload;
 		},
 	},
 	actions: {},

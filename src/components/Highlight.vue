@@ -13,6 +13,7 @@
 				top: topVal,
 			}
 		"
+		:class="{ invis: !filtered }"
 	>
 		<v-chip
 			v-if="!$store.state.groupMode"
@@ -63,7 +64,7 @@
 import EditHighlight from "./EditHighlight.vue";
 export default {
 	components: { EditHighlight },
-	props: ["group", "content", "highlightColor", "id"],
+	props: ["group", "content", "highlightColor", "id", "left", "top", "pos"],
 	data: () => ({
 		togglePopups: false,
 		position: "relative",
@@ -82,6 +83,17 @@ export default {
 				this.leftVal = `${e.pageX - leftOffset}px`;
 				this.topVal = `${e.pageY - topOffset}px`;
 			}
+
+			this.$store.commit("edit", {
+				group: this.group,
+				oldGroup: this.group,
+				color: this.highlightColor,
+				id: this.id,
+				top: this.topVal,
+				left: this.leftVal,
+				pos: this.position,
+				content: this.content,
+			});
 		},
 
 		getClick(e) {
@@ -95,7 +107,6 @@ export default {
 					left += element.offsetLeft || 0;
 					element = element.offsetParent;
 				} while (element);
-
 				this.clickLeft = {
 					pageX: e.pageX,
 					targetLeft: left,
@@ -103,6 +114,20 @@ export default {
 				this.clickTop = { pageY: e.pageY, targetTop: top };
 			}
 		},
+	},
+	computed: {
+		filtered() {
+			const filters = this.$store.state.filteredGroups;
+			if (filters.length > 0 && filters.includes(this.group)) return true;
+			else if (filters.length > 0 && !filters.includes(this.group))
+				return false;
+			else return true;
+		},
+	},
+	mounted() {
+		this.leftVal = this.left;
+		this.topVal = this.top;
+		this.position = this.pos;
 	},
 };
 </script>
@@ -141,5 +166,10 @@ export default {
 
 .popups > * {
 	margin-bottom: 8px;
+}
+
+.invis {
+	opacity: 0;
+	pointer-events: none;
 }
 </style>

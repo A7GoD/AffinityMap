@@ -7,6 +7,7 @@
 		class="bucket"
 		outlined
 		depressed
+		:class="{ invis: !filtered }"
 	>
 		<div class="d-flex justify-center bucket-title">
 			<div>{{ group }}</div>
@@ -47,6 +48,13 @@ export default {
 					group: this.group,
 				});
 			},
+		},
+		filtered() {
+			const filters = this.$store.state.filteredGroups;
+			if (filters.length > 0 && filters.includes(this.group)) return true;
+			else if (filters.length > 0 && !filters.includes(this.group))
+				return false;
+			else return true;
 		},
 	},
 };

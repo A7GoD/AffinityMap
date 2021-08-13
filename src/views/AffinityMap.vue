@@ -1,5 +1,10 @@
 <template>
-	<div class="affinity-map d-flex" @dragover.prevent @dragleave.prevent>
+	<div
+		ref="affinitymap"
+		class="affinity-map d-flex"
+		@dragover.prevent
+		@dragleave.prevent
+	>
 		<div :style="{ width: '100%' }" class="d-flex justify-center">
 			<div
 				v-if="!$store.state.groupMode"
@@ -12,45 +17,50 @@
 						:group="note.group"
 						:content="note.content"
 						:highlightColor="note.color"
+						:top="note.top"
+						:left="note.left"
+						:pos="note.pos"
 					/>
 				</div>
 			</div>
 			<div v-else class="grouped-highlights-container">
 				<Bucket
 					v-for="group in groups"
-					v-on:dragging="(event) => (dragItem = event)"
-					v-on:dropped="(event) => beginTransfer(event)"
 					:group="group"
 					:highlights="highlights"
 					:key="group"
 				/>
 			</div>
 		</div>
+		<ZoomButtons
+			v-on:zoomin="zoomin"
+			v-on:zoomout="zoomout"
+			v-on:reset="reset"
+		/>
 	</div>
 </template>
 
 <script>
 import Bucket from "../components/Bucket.vue";
 import Highlight from "../components/Highlight.vue";
+import ZoomButtons from "../components/ZoomButtons.vue";
 
 export default {
-	components: { Highlight, Bucket },
+	components: { Highlight, Bucket, ZoomButtons },
 	data: () => ({
-		dragItem: null,
+		zoom: 100,
 	}),
 
 	computed: {
 		highlights() {
 			const temp = this.$store.state.groupedData;
 			let highlights = [];
-			if (highlights) {
-				Object.keys(temp).forEach((e) => {
-					highlights = [...highlights, ...temp[e]];
-				});
-				highlights.sort((a, b) => a.date - b.date);
-				return highlights;
-			}
-			return [];
+
+			Object.keys(temp).forEach((e) => {
+				highlights = [...highlights, ...temp[e]];
+			});
+			highlights.sort((a, b) => -a.date + b.date);
+			return highlights;
 		},
 		groups() {
 			return Object.keys(this.$store.state.groupedData);
@@ -58,13 +68,19 @@ export default {
 	},
 
 	methods: {
-		beginTransfer(data) {
-			console.log(data);
-			console.log(this.dragItem);
+		zoomout() {
+			this.zoom -= 10;
+			this.$refs["affinitymap"].style.zoom = `${this.zoom}%`;
+		},
+		zoomin() {
+			this.zoom += 10;
+			this.$refs["affinitymap"].style.zoom = `${this.zoom}%`;
+		},
+		reset() {
+			this.zoom = 100;
+			this.$refs["affinitymap"].style.zoom = `${this.zoom}%`;
 		},
 	},
-
-	watch: {},
 };
 </script>
 
@@ -75,6 +91,7 @@ export default {
 	padding: 24px;
 	justify-content: center;
 }
+
 .ungrouped-highlights-container {
 	display: flex;
 	flex-wrap: wrap;

@@ -122,6 +122,9 @@ export default {
 				content: this.content,
 				group: groupName,
 				color: this.colors[this.selectedColor],
+				left: 0,
+				top: 0,
+				pos: "relative",
 			});
 			this.show = false;
 		},
