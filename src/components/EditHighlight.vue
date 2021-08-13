@@ -88,7 +88,7 @@
 <script>
 import store from "../store/index.js";
 export default {
-	props: ["color", "body", "group", "id"],
+	props: ["color", "body", "group", "id", "user"],
 	data: () => ({
 		items: null,
 		selected: null,
@@ -109,6 +109,7 @@ export default {
 				group: this.newGroup ? this.newGroupName : this.selected,
 				color: this.colors[this.selectedColor],
 				date,
+				user: this.user,
 			});
 			this.show = false;
 		},

@@ -35,6 +35,7 @@
 				:body="content"
 				:group="group"
 				:id="id"
+				:user="user"
 			/>
 			<v-btn fab x-small depressed>
 				<v-icon
