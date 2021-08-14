@@ -252,7 +252,7 @@ export default {
 
 .selected {
 	box-sizing: border-box !important;
-	filter: drop-shadow(1px 0px 5px grey);
-	border: gray solid 2px !important;
+	filter: drop-shadow(1px 0px 5px rgba(0, 0, 0, 0.5));
+	border: rgba(0, 0, 0, 0.5) solid 2px !important;
 }
 </style>
