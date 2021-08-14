@@ -1,29 +1,34 @@
 <template>
-	<div
-		ref="affinitymap"
-		class="affinity-map d-flex"
-		@dragover.prevent
-		@dragleave.prevent
-	>
+	<div class="affinity-map d-flex" @dragover.prevent @dragleave.prevent>
+		<div
+			v-if="!$store.state.groupMode"
+			class="selection-area"
+			@mousedown="dragStart"
+			@mousemove="dragMove"
+			@mouseup="dragLeave"
+		></div>
 		<div :style="{ width: '100%' }" class="d-flex justify-center">
 			<div
 				v-if="!$store.state.groupMode"
 				class="ungrouped-highlights-container"
+				:style="{ pointerEvents: selectMode ? 'none' : 'auto' }"
 			>
-				<div v-for="(note, idx) in highlights" :key="idx">
-					<Highlight
-						class="highlight-card"
-						:id="note.id"
-						:group="note.group"
-						:content="note.content"
-						:highlightColor="note.color"
-						:top="note.top"
-						:left="note.left"
-						:pos="note.pos"
-						:user="note.user"
-						:date="note.date"
-					/>
-				</div>
+				<Highlight
+					v-for="note in highlights"
+					v-on:select="($event) => $emit('select', $event)"
+					:key="note.id"
+					ref="highlight"
+					class="highlight-card"
+					:id="note.id"
+					:group="note.group"
+					:content="note.content"
+					:highlightColor="note.color"
+					:top="note.top"
+					:left="note.left"
+					:pos="note.pos"
+					:user="note.user"
+					:date="note.date"
+				/>
 			</div>
 			<div v-else class="grouped-highlights-container">
 				<Bucket
@@ -49,28 +54,11 @@ import ZoomButtons from "../components/ZoomButtons.vue";
 
 export default {
 	components: { Highlight, Bucket, ZoomButtons },
+	props: ["selectMode", "highlights", "groups"],
 	data: () => ({
 		zoom: 100,
+		dragS: false,
 	}),
-
-	computed: {
-		highlights() {
-			const temp = this.$store.state.groupedData;
-			let highlights = [];
-
-			Object.keys(temp).forEach((e) => {
-				highlights = [...highlights, ...temp[e]];
-			});
-			highlights.sort((a, b) => -a.date + b.date);
-			return highlights;
-		},
-		groups() {
-			return Object.keys(this.$store.state.groupedData).map((x) => {
-				if (x === "null") return null;
-				else return x;
-			});
-		},
-	},
 
 	methods: {
 		zoomout() {
@@ -85,7 +73,21 @@ export default {
 			this.zoom = 100;
 			this.$refs["affinitymap"].style.zoom = `${this.zoom}%`;
 		},
+		dragStart(e) {
+			this.dragS = true;
+			this.$emit("startSelect", { x: e.pageX, y: e.pageY });
+		},
+		dragMove(e) {
+			if (this.dragS) {
+				this.$emit("moveSelect", { x: e.pageX, y: e.pageY });
+			}
+		},
+		dragLeave(e) {
+			this.dragS = false;
+			this.$emit("leaveSelect", { x: e.pageX, y: e.pageY });
+		},
 	},
+	computed: {},
 };
 </script>
 
@@ -95,6 +97,16 @@ export default {
 	flex: 1 0 0;
 	padding: 24px;
 	justify-content: center;
+}
+.selection-area {
+	top: 0px;
+	left: 0px;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+	background: transparent;
+	/* pointer-events: none; */
 }
 
 .ungrouped-highlights-container {

@@ -12,7 +12,7 @@
 		depressed
 	>
 		<div class="d-flex justify-center bucket-title">
-			<div>{{ group ? group : "[STICKY]" }}</div>
+			<div @mousedown.prevent>{{ group ? group : "[STICKY]" }}</div>
 		</div>
 		<div class="bucket-body">
 			<div
@@ -46,7 +46,7 @@ export default {
 			let data = e.dataTransfer.getData("text");
 			e.dataTransfer.clearData();
 			let { id } = JSON.parse(data);
-			this.$store.dispatch("changeGroup", { id, group: this.group });
+			this.$store.dispatch("changeBucket", { id, group: this.group });
 			this.canDrop = false;
 		},
 	},

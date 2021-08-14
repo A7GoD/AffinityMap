@@ -40,7 +40,7 @@ export default {
 	computed: {
 		items() {
 			return Object.keys(this.$store.state.groupedData).map((x) => {
-				if (x === "null") return "ungrouped";
+				if (x === "null") return "[STICKY]";
 				else return x;
 			});
 		},
@@ -48,7 +48,10 @@ export default {
 	watch: {
 		selectedGroups() {
 			this.$store.commit("updateFilters", {
-				filters: this.selectedGroups,
+				filters: this.selectedGroups.map((x) => {
+					if (x === "[STICKY]") return null;
+					else return x;
+				}),
 			});
 		},
 	},

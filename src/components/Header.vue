@@ -1,12 +1,13 @@
 <template>
-	<div>
+	<div @dragstart.prevent>
 		<div class="main-header">
-			<span
+			<span :style="{ zIndex: '1' }"
 				>Messaging /
 				<span>Affinity Map <span>&#8964;</span></span></span
 			>
 
 			<v-btn
+				:style="{ zIndex: '1' }"
 				color="secondary"
 				@click="$store.commit('toggleGroupMode')"
 				>{{
@@ -20,13 +21,20 @@
 			<transition mode="out-in" name="slide-up">
 				<span v-if="!shouldFilter"
 					>Filter By:
-					<v-btn color="secondary" @click="shouldFilter = true"
+					<v-btn
+						:style="{ zIndex: '1' }"
+						color="secondary"
+						@click="shouldFilter = true"
 						>Select</v-btn
 					></span
 				>
 			</transition>
 			<transition mode="in-out" name="slide-down">
-				<div class="filter-box" v-if="shouldFilter">
+				<div
+					class="filter-box"
+					v-if="shouldFilter"
+					:style="{ zIndex: '1' }"
+				>
 					<FilterBox />
 					<v-btn
 						@click="

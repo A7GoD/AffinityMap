@@ -1,16 +1,21 @@
 <template>
 	<v-menu
-		:style="{ transition: 'height 300ms auto' }"
+		:style="{ zIndex: '1' }"
 		v-model="show"
 		class="elevation-1"
 		left
 		offset-y
 		nudge-bottom="8"
-		max-width="600"
+		min-width="300"
+		max-width="300"
 		:close-on-content-click="false"
 	>
 		<template v-slot:activator="{ on, attrs }">
-			<v-btn color="secondary" v-bind="attrs" v-on="on"
+			<v-btn
+				color="secondary"
+				:style="{ zIndex: '1' }"
+				v-bind="attrs"
+				v-on="on"
 				><v-icon>mdi-note-outline </v-icon></v-btn
 			>
 		</template>
@@ -121,7 +126,7 @@ import store from "../store/index";
 import { v4 as uuid } from "uuid";
 export default {
 	data: () => ({
-		isGroupless: false,
+		isGroupless: true,
 		items: [],
 		show: false,
 		content: null,

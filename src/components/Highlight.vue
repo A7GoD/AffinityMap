@@ -1,5 +1,6 @@
 <template>
 	<v-card
+		@click="() => this.$emit('select', id)"
 		draggable
 		class="highlight"
 		:color="highlightColor"
@@ -14,7 +15,7 @@
 				top: topVal,
 			}
 		"
-		:class="{ invis: !filtered }"
+		:class="{ invis: !filtered, selected: isSelected }"
 	>
 		<v-chip
 			v-if="!$store.state.groupMode && group !== null"
@@ -86,6 +87,7 @@ export default {
 		topVal: "initial",
 		clickLeft: "null",
 		clickTop: "null",
+		isSelected: false,
 	}),
 	methods: {
 		getCoordinates(e) {
@@ -140,7 +142,7 @@ export default {
 						});
 					}
 				}
-			}, 100);
+			}, 5);
 		},
 
 		resetPosition() {
@@ -169,6 +171,7 @@ export default {
 		this.topVal = this.top;
 		this.position = this.pos;
 	},
+
 	watch: {
 		top() {
 			this.leftVal = this.left;
@@ -245,5 +248,11 @@ export default {
 .invis {
 	opacity: 0;
 	pointer-events: none;
+}
+
+.selected {
+	box-sizing: border-box !important;
+	filter: drop-shadow(1px 0px 5px grey);
+	border: gray solid 2px !important;
 }
 </style>

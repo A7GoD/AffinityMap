@@ -131,7 +131,16 @@ const store = new Vuex.Store({
 			let highlight = ctx.getters.getHighlight(id);
 			ctx.commit("delete", { id, group: highlight.group });
 
-			if (group !== "_$dont_change_") highlight.group = group;
+			if (group !== "_$dont_change_" && highlight.group === null)
+				highlight.group = group;
+
+			ctx.commit("createHighlight", highlight);
+		},
+		changeBucket(ctx, { id, group }) {
+			let highlight = ctx.getters.getHighlight(id);
+			ctx.commit("delete", { id, group: highlight.group });
+
+			highlight.group = group;
 
 			ctx.commit("createHighlight", highlight);
 		},
