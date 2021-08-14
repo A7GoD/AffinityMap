@@ -6,8 +6,14 @@
 				<span>Affinity Map <span>&#8964;</span></span></span
 			>
 
-			<v-btn color="secondary" @click="$store.commit('toggleGroupMode')"
-				>Group Highlights</v-btn
+			<v-btn
+				color="secondary"
+				@click="$store.commit('toggleGroupMode')"
+				>{{
+					$store.state.groupMode
+						? "Standard View"
+						: "Group Highlights"
+				}}</v-btn
 			>
 		</div>
 		<div class="secondary-header">
@@ -50,7 +56,6 @@ import FilterBox from "./FilterBox.vue";
 export default {
 	components: { CreateHighlight, FilterBox },
 	data: () => ({
-		groups: ["risk", "standard"],
 		shouldFilter: false,
 	}),
 };
