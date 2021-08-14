@@ -11,8 +11,15 @@
 		outlined
 		depressed
 	>
-		<div class="d-flex justify-center bucket-title">
+		<div class="d-flex justify-center bucket-title align-center">
 			<div @mousedown.prevent>{{ group ? group : "[STICKY]" }}</div>
+			<v-btn
+				:style="{ position: 'absolute', right: '8px' }"
+				text
+				@click="$store.commit('deleteGroup', { group })"
+				:disabled="filteredHighlights.length !== 0"
+				><v-icon>mdi-delete</v-icon></v-btn
+			>
 		</div>
 		<div class="bucket-body">
 			<div
@@ -55,12 +62,6 @@ export default {
 			get() {
 				return this.$store.state.groupedData[this.group];
 			},
-			// set(value) {
-			// 	this.$store.commit("updateData", {
-			// 		array: value,
-			// 		group: this.group,
-			// 	});
-			// },
 		},
 		filtered() {
 			const filters = this.$store.state.filteredGroups;

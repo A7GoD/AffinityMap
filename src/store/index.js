@@ -118,6 +118,12 @@ const store = new Vuex.Store({
 			}
 		},
 
+		deleteGroup(ctx, { group }) {
+			let highlights = ctx.groupedData;
+			delete highlights[group];
+			ctx.groupedData = { ...highlights };
+		},
+
 		updateFilters(ctx, { filters }) {
 			ctx.filteredGroups = filters;
 		},
