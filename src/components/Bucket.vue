@@ -1,16 +1,18 @@
 <template>
 	<v-card
-		@dragenter.prevent
+		@drop="dropCheck"
 		@drag.prevent
-		@dragleave.prevent
+		@dragenter.prevent
+		@dragover.prevent="canDrop = true"
+		@dragleave.prevent="canDrop = false"
 		color="#eceaec"
 		class="bucket"
+		:class="{ invis: !filtered, 'drop-here': canDrop }"
 		outlined
 		depressed
-		:class="{ invis: !filtered }"
 	>
 		<div class="d-flex justify-center bucket-title">
-			<div>{{ group !== "null" ? group : "ungrouped" }}</div>
+			<div>{{ group ? group : "Ungrouped" }}</div>
 		</div>
 		<div class="bucket-body">
 			<div
@@ -36,19 +38,29 @@ import Highlight from "./Highlight.vue";
 export default {
 	components: { Highlight },
 	props: ["group", "highlights"],
-	data: () => ({}),
-	methods: {},
+	data: () => ({
+		canDrop: false,
+	}),
+	methods: {
+		dropCheck(e) {
+			let data = e.dataTransfer.getData("text");
+			e.dataTransfer.clearData();
+			let { id } = JSON.parse(data);
+			this.$store.dispatch("changeGroup", { id, group: this.group });
+			this.canDrop = false;
+		},
+	},
 	computed: {
 		filteredHighlights: {
 			get() {
 				return this.$store.state.groupedData[this.group];
 			},
-			set(value) {
-				this.$store.commit("updateData", {
-					array: value,
-					group: this.group,
-				});
-			},
+			// set(value) {
+			// 	this.$store.commit("updateData", {
+			// 		array: value,
+			// 		group: this.group,
+			// 	});
+			// },
 		},
 		filtered() {
 			const filters = this.$store.state.filteredGroups;
@@ -65,6 +77,9 @@ export default {
 .bucket {
 	margin: 8px 8px;
 	min-width: 580px;
+	min-height: 200px;
+	height: max-content;
+	max-height: max-content;
 	width: 580px;
 }
 
@@ -89,7 +104,7 @@ export default {
 	margin: none;
 	padding: none;
 }
-.highlight-card-in-bucket > * {
+.highlight-card-in-bucket {
 	margin: 16px 16px;
 }
 
@@ -97,5 +112,32 @@ export default {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
+	height: max-content;
+}
+
+.drop-here ~ *,
+.drop-here .highlight-card-in-bucket,
+.drop-here .highlight-card-in-bucket .highlight,
+.drop-here .bucket-title {
+	pointer-events: none;
+}
+
+.drop-here::after {
+	background: transparent;
+	backdrop-filter: blur(4px);
+	pointer-events: none;
+	display: grid;
+	place-items: center;
+	z-index: 10;
+	content: "Drop Here";
+	font-size: 32px;
+	font-weight: bold;
+	position: absolute;
+	bottom: 0px;
+	height: calc(100% - 50px);
+	width: 100%;
+
+	border-radius: 4px;
+	border: dashed 3px #000;
 }
 </style>

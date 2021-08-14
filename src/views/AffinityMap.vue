@@ -64,7 +64,10 @@ export default {
 			return highlights;
 		},
 		groups() {
-			return Object.keys(this.$store.state.groupedData);
+			return Object.keys(this.$store.state.groupedData).map((x) => {
+				if (x === "null") return null;
+				else return x;
+			});
 		},
 	},
 
@@ -104,9 +107,9 @@ export default {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	max-width: 1366px;
+	/* max-width: px; */
 	justify-content: center;
-	width: 100%;
+	width: 90%;
 }
 
 .container {

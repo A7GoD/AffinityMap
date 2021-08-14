@@ -17,6 +17,25 @@ const store = new Vuex.Store({
 
 		groupMode: false,
 	},
+	getters: {
+		getHighlight: (ctx) => (id) => {
+			let highlight = {};
+			let found = false;
+			let keys = Object.keys(ctx.groupedData);
+
+			for (let key of keys) {
+				for (let x of ctx.groupedData[key]) {
+					if (x.id === id) {
+						highlight = x;
+						break;
+					}
+				}
+				if (found) break;
+			}
+
+			return highlight;
+		},
+	},
 
 	mutations: {
 		createHighlight(ctx, payload) {
@@ -38,9 +57,14 @@ const store = new Vuex.Store({
 		toggleGroupMode(ctx) {
 			ctx.groupMode = !ctx.groupMode;
 		},
-		updateData(ctx, { array, group }) {
-			ctx.groupedData = { ...ctx.groupedData, [group]: [...array] };
-		},
+
+		// updateData(ctx, { array, group }) {
+		// 	ctx.groupedData = { ...ctx.groupedData, [group]: [...array] };
+		// },
+
+		// updateGroup(ctx, { highlight, newGroup }) {
+
+		// },
 
 		edit(
 			ctx,
@@ -96,6 +120,7 @@ const store = new Vuex.Store({
 				};
 			}
 		},
+
 		updateFilters(ctx, { filters }) {
 			ctx.filteredGroups = filters;
 		},
@@ -104,7 +129,13 @@ const store = new Vuex.Store({
 			ctx.groupedData = payload;
 		},
 	},
-	actions: {},
+	actions: {
+		changeGroup(ctx, { id, group }) {
+			let highlight = ctx.getters.getHighlight(id);
+			ctx.commit("delete", { id, group: highlight.group });
+			ctx.commit("createHighlight", { ...highlight, group: group });
+		},
+	},
 	modules: {},
 });
 

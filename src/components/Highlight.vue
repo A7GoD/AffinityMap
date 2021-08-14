@@ -16,7 +16,7 @@
 		:class="{ invis: !filtered }"
 	>
 		<v-chip
-			v-if="!$store.state.groupMode"
+			v-if="!$store.state.groupMode && group !== null"
 			class="elevation-0 group-name"
 			text-color="white"
 			color="#666289"
@@ -48,12 +48,10 @@
 				fab
 				x-small
 				depressed
-				v-if="position !== 'relative'"
+				v-if="position !== 'relative' && groupMode === false"
 				@click="
 					() => {
-						position = 'relative';
-						leftVal = '0px';
-						topVal = '0px';
+						this.resetPosition();
 					}
 				"
 			>
@@ -87,30 +85,31 @@ export default {
 	}),
 	methods: {
 		getCoordinates(e) {
-			if (!this.$store.state.groupMode) {
+			if (!this.groupMode) {
+				console.log("called");
 				this.position = "absolute";
 				let leftOffset =
 					this.clickLeft.pageX - this.clickLeft.targetLeft;
 				let topOffset = this.clickTop.pageY - this.clickTop.targetTop;
 				this.leftVal = `${e.pageX - leftOffset}px`;
 				this.topVal = `${e.pageY - topOffset}px`;
-			}
 
-			this.$store.commit("edit", {
-				group: this.group,
-				oldGroup: this.group,
-				color: this.highlightColor,
-				id: this.id,
-				top: this.topVal,
-				left: this.leftVal,
-				pos: this.position,
-				content: this.content,
-				user: this.user,
-			});
+				this.$store.commit("edit", {
+					group: this.group,
+					oldGroup: this.group,
+					color: this.highlightColor,
+					id: this.id,
+					top: this.topVal,
+					left: this.leftVal,
+					pos: this.position,
+					content: this.content,
+					user: this.user,
+				});
+			}
 		},
 
 		getClick(e) {
-			if (!this.$store.state.groupMode) {
+			if (!this.groupMode) {
 				let top = 0;
 				let left = 0;
 				let element = e.target;
@@ -125,7 +124,27 @@ export default {
 					targetLeft: left,
 				};
 				this.clickTop = { pageY: e.pageY, targetTop: top };
+			} else if (this.groupMode) {
+				e.dataTransfer.setData("text", JSON.stringify({ id: this.id }));
 			}
+		},
+
+		resetPosition() {
+			this.position = "relative";
+			this.leftVal = "0px";
+			this.topVal = "0px";
+
+			this.$store.commit("edit", {
+				group: this.group,
+				oldGroup: this.group,
+				color: this.highlightColor,
+				id: this.id,
+				top: this.topVal,
+				left: this.leftVal,
+				pos: this.position,
+				content: this.content,
+				user: this.user,
+			});
 		},
 	},
 	computed: {
@@ -135,6 +154,9 @@ export default {
 			else if (filters.length > 0 && !filters.includes(this.group))
 				return false;
 			else return true;
+		},
+		groupMode() {
+			return this.$store.state.groupMode;
 		},
 	},
 	mounted() {
@@ -178,7 +200,7 @@ export default {
 	left: 20px;
 	width: 70%;
 	text-overflow: ellipsis;
-	/* Required for text-overflow to do anything */
+
 	white-space: nowrap;
 	overflow: hidden;
 }
@@ -187,9 +209,16 @@ export default {
 	display: none;
 }
 
+.highlight:hover > .popups {
+	opacity: 1;
+}
+
 .popups {
 	position: absolute;
 	display: flex;
+	opacity: 0;
+	transition: opacity 200ms ease;
+	height: max-content;
 	flex-direction: column;
 	justify-content: space-between;
 	top: 0px;
