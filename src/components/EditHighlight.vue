@@ -15,39 +15,48 @@
 				><h2>Edit Highlight</h2></v-toolbar
 			>
 			<div class="dialog-body">
-				<v-row class="d-flex align-center select-group">
-					<transition name="slide" mode="out-in">
-						<v-select
-							v-if="!newGroup"
-							dense
-							class="selectGroup"
-							:items="items"
-							label="Select a group"
-							v-model="selected"
-							outlined
-							:disabled="newGroup"
-							hide-details="auto"
-						></v-select>
-						<v-text-field
-							v-else
-							v-model="newGroupName"
-							label="New Group"
-							outlined
-							dense
-							hide-details="auto"
-						></v-text-field>
-					</transition>
-					<v-btn
+				<v-row class="d-flex justify-center  flex-column">
+					<v-checkbox
 						color="secondary"
-						outlined
-						depressed
-						fab
-						small
-						@click="newGroup = !newGroup"
-						><v-icon :class="{ rotate: newGroup }"
-							>mdi-plus</v-icon
-						></v-btn
-					>
+						v-model="isGroupless"
+						label="Sticky Note?"
+					/>
+					<div class="select-group d-flex align-center">
+						<transition name="slide" mode="out-in">
+							<v-select
+								v-if="!newGroup"
+								dense
+								class="selectGroup"
+								:items="items"
+								label="Select a group"
+								v-model="selected"
+								outlined
+								:disabled="newGroup || isGroupless"
+								hide-details="auto"
+							></v-select>
+							<v-text-field
+								:disabled="isGroupless"
+								v-else
+								v-model="newGroupName"
+								label="New Group"
+								outlined
+								dense
+								hide-details="auto"
+							></v-text-field>
+						</transition>
+						<v-btn
+							:disabled="isGroupless"
+							color="secondary"
+							outlined
+							depressed
+							fab
+							small
+							@click="newGroup = !newGroup"
+							><v-icon :class="{ rotate: newGroup }"
+								>mdi-plus</v-icon
+							></v-btn
+						>
+					</div>
 				</v-row>
 
 				<v-row class="dflex colors">
@@ -78,7 +87,14 @@
 				</v-row>
 			</div>
 			<v-card-actions class="justify-end">
-				<v-btn text @click="updateHighlight()">Update</v-btn>
+				<v-btn
+					text
+					@click="updateHighlight()"
+					:disabled="
+						!isGroupless && newGroup && newGroupName === null
+					"
+					>Update</v-btn
+				>
 				<v-btn text @click="show = !show">Close</v-btn>
 			</v-card-actions>
 		</v-card>
@@ -100,6 +116,7 @@ export default {
 		"date",
 	],
 	data: () => ({
+		isGroupless: false,
 		items: null,
 		selected: null,
 		show: false,
@@ -111,11 +128,19 @@ export default {
 	}),
 	methods: {
 		updateHighlight() {
+			let groupName;
+			if (this.isGroupless) {
+				groupName = null;
+			} else {
+				if (this.newGroup) {
+					groupName = this.newGroupName;
+				} else groupName = this.selected;
+			}
 			store.commit("edit", {
 				id: this.id,
 				content: this.content,
 				oldGroup: this.group,
-				group: this.newGroup ? this.newGroupName : this.selected,
+				group: groupName,
 				color: this.selectedColor
 					? this.colors[this.selectedColor]
 					: this.color,
@@ -140,7 +165,9 @@ export default {
 				this.colors = Object.keys(allColors).map((z) => {
 					return allColors[z];
 				});
-				this.items = Object.keys(store.state.groupedData);
+				this.items = Object.keys(store.state.groupedData).filter(
+					(x) => x !== "null"
+				);
 				if (this.items.length === 0) this.newGroup = true;
 				else this.newGroup = false;
 			}
@@ -152,19 +179,21 @@ export default {
 <style scoped>
 .dialog-body {
 	padding: 8px 24px;
-	margin: 16px 0px;
+	margin: 0px 0px;
 }
 
 .dialog-body > * {
-	margin: 16px;
+	margin: 8px;
 }
 
 .select-group > :first-child {
-	max-width: 250px;
+	/* max-width: 250px; */
+	flex-grow: 1;
 	margin-right: 8px;
 }
 
 .select-group {
+	width: 100%;
 	justify-content: space-between;
 }
 

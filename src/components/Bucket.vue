@@ -12,7 +12,7 @@
 		depressed
 	>
 		<div class="d-flex justify-center bucket-title">
-			<div>{{ group ? group : "Ungrouped" }}</div>
+			<div>{{ group ? group : "[STICKY]" }}</div>
 		</div>
 		<div class="bucket-body">
 			<div

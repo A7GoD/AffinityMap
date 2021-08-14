@@ -6,7 +6,7 @@
 		:elevation="0"
 		@dragstart="getClick"
 		@dragend="getCoordinates"
-		@drop="droppedOn"
+		@drop.prevent="droppedOn"
 		:style="
 			!$store.state.groupMode && {
 				position: position,
@@ -129,6 +129,7 @@ export default {
 		droppedOn(e) {
 			let data = e.dataTransfer.getData("text");
 			let group = this.group;
+			if (group === null) group = "_$dont_change_";
 			setTimeout(() => {
 				if (!this.groupMode) {
 					if (data) var { id } = JSON.parse(data);

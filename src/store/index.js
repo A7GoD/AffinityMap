@@ -130,7 +130,9 @@ const store = new Vuex.Store({
 		changeGroup(ctx, { id, group }) {
 			let highlight = ctx.getters.getHighlight(id);
 			ctx.commit("delete", { id, group: highlight.group });
-			highlight.group = group;
+
+			if (group !== "_$dont_change_") highlight.group = group;
+
 			ctx.commit("createHighlight", highlight);
 		},
 

@@ -21,38 +21,47 @@
 						New Highlight
 					</v-row>
 
-					<v-row class="d-flex align-center select-group">
-						<transition name="slide" mode="out-in">
-							<v-select
-								v-if="!newGroup"
-								dense
-								:items="items"
-								label="Select a group"
-								v-model="selected"
-								outlined
-								:disabled="newGroup"
-								hide-details="auto"
-							></v-select>
-							<v-text-field
-								v-else
-								v-model="newGroupName"
-								label="New Group"
-								outlined
-								dense
-								hide-details="auto"
-							></v-text-field>
-						</transition>
-						<v-btn
+					<v-row class="d-flex justify-center flex-column">
+						<v-checkbox
 							color="secondary"
-							outlined
-							depressed
-							fab
-							small
-							@click="newGroup = !newGroup"
-							><v-icon :class="{ rotate: newGroup }"
-								>mdi-plus</v-icon
-							></v-btn
-						>
+							v-model="isGroupless"
+							label="Sticky Note?"
+						/>
+						<div class="select-group d-flex align-center">
+							<transition name="slide" mode="out-in">
+								<v-select
+									v-if="!newGroup"
+									dense
+									:items="items"
+									label="Select a group"
+									v-model="selected"
+									outlined
+									:disabled="newGroup || isGroupless"
+									hide-details="auto"
+								></v-select>
+								<v-text-field
+									v-else
+									v-model="newGroupName"
+									label="New Group"
+									outlined
+									dense
+									hide-details="auto"
+									:disabled="isGroupless"
+								></v-text-field>
+							</transition>
+							<v-btn
+								:disabled="isGroupless"
+								color="secondary"
+								outlined
+								depressed
+								fab
+								small
+								@click="newGroup = !newGroup"
+								><v-icon :class="{ rotate: newGroup }"
+									>mdi-plus</v-icon
+								></v-btn
+							>
+						</div>
 					</v-row>
 
 					<v-row class="dflex colors">
@@ -94,7 +103,14 @@
 			</v-card-text>
 			<v-card-actions class="justify-end">
 				<v-btn text @click="show = false">Cancel</v-btn>
-				<v-btn text @click="createHighlight()">Create</v-btn>
+				<v-btn
+					text
+					:disabled="
+						!isGroupless && newGroup && newGroupName === null
+					"
+					@click="createHighlight()"
+					>Create</v-btn
+				>
 			</v-card-actions>
 		</v-card>
 	</v-menu>
@@ -105,6 +121,7 @@ import store from "../store/index";
 import { v4 as uuid } from "uuid";
 export default {
 	data: () => ({
+		isGroupless: false,
 		items: [],
 		show: false,
 		content: null,
@@ -121,10 +138,14 @@ export default {
 			let id = uuid();
 			let date = new Date();
 			let groupName;
-			if (this.newGroup) {
-				groupName = this.newGroupName;
-				store.commit("createGroup", groupName);
-			} else groupName = this.selected;
+
+			if (this.isGroupless) {
+				groupName = null;
+			} else {
+				if (this.newGroup) {
+					groupName = this.newGroupName;
+				} else groupName = this.selected;
+			}
 
 			store.commit("createHighlight", {
 				id,
@@ -152,7 +173,9 @@ export default {
 					return allColors[z];
 				});
 
-				this.items = Object.keys(store.state.groupedData);
+				this.items = Object.keys(store.state.groupedData).filter(
+					(x) => x !== "null"
+				);
 				if (this.items.length === 0) this.newGroup = true;
 				else this.newGroup = false;
 			}
@@ -181,7 +204,7 @@ export default {
 }
 
 .select-group > :first-child {
-	max-width: 200px;
+	flex-grow: 1;
 	margin-right: 8px;
 }
 
