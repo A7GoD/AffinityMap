@@ -132,8 +132,8 @@ export default {
 				content: this.content,
 				group: groupName,
 				color: this.colors[this.selectedColor],
-				left: 0,
-				top: 0,
+				left: "0px",
+				top: "0px",
 				pos: "relative",
 				user: this.user,
 			});

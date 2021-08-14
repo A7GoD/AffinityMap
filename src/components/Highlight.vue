@@ -6,6 +6,7 @@
 		:elevation="0"
 		@dragstart="getClick"
 		@dragend="getCoordinates"
+		@drop="droppedOn"
 		:style="
 			!$store.state.groupMode && {
 				position: position,
@@ -36,6 +37,9 @@
 				:group="group"
 				:id="id"
 				:user="user"
+				:top="topVal"
+				:left="leftVal"
+				:pos="position"
 			/>
 			<v-btn fab x-small depressed>
 				<v-icon
@@ -74,9 +78,9 @@ export default {
 		"top",
 		"pos",
 		"user",
+		"date",
 	],
 	data: () => ({
-		togglePopups: false,
 		position: "relative",
 		leftVal: "initial",
 		topVal: "initial",
@@ -86,24 +90,18 @@ export default {
 	methods: {
 		getCoordinates(e) {
 			if (!this.groupMode) {
-				console.log("called");
 				this.position = "absolute";
 				let leftOffset =
 					this.clickLeft.pageX - this.clickLeft.targetLeft;
 				let topOffset = this.clickTop.pageY - this.clickTop.targetTop;
-				this.leftVal = `${e.pageX - leftOffset}px`;
-				this.topVal = `${e.pageY - topOffset}px`;
+				let leftVal = `${e.pageX - leftOffset}px`;
+				let topVal = `${e.pageY - topOffset}px`;
 
-				this.$store.commit("edit", {
-					group: this.group,
-					oldGroup: this.group,
-					color: this.highlightColor,
-					id: this.id,
-					top: this.topVal,
-					left: this.leftVal,
+				this.$store.dispatch("changePosition", {
+					left: leftVal,
+					top: topVal,
 					pos: this.position,
-					content: this.content,
-					user: this.user,
+					id: this.id,
 				});
 			}
 		},
@@ -124,26 +122,32 @@ export default {
 					targetLeft: left,
 				};
 				this.clickTop = { pageY: e.pageY, targetTop: top };
-			} else if (this.groupMode) {
-				e.dataTransfer.setData("text", JSON.stringify({ id: this.id }));
 			}
+			e.dataTransfer.setData("text", JSON.stringify({ id: this.id }));
+		},
+
+		droppedOn(e) {
+			let data = e.dataTransfer.getData("text");
+			let group = this.group;
+			setTimeout(() => {
+				if (!this.groupMode) {
+					if (data) var { id } = JSON.parse(data);
+					if (id !== this.id) {
+						this.$store.dispatch("changeGroup", {
+							id,
+							group,
+						});
+					}
+				}
+			}, 100);
 		},
 
 		resetPosition() {
-			this.position = "relative";
-			this.leftVal = "0px";
-			this.topVal = "0px";
-
-			this.$store.commit("edit", {
-				group: this.group,
-				oldGroup: this.group,
-				color: this.highlightColor,
+			this.$store.dispatch("changePosition", {
+				left: "0px",
+				top: "0px",
+				pos: "relative",
 				id: this.id,
-				top: this.topVal,
-				left: this.leftVal,
-				pos: this.position,
-				content: this.content,
-				user: this.user,
 			});
 		},
 	},
@@ -159,10 +163,17 @@ export default {
 			return this.$store.state.groupMode;
 		},
 	},
-	mounted() {
+	beforeMount() {
 		this.leftVal = this.left;
 		this.topVal = this.top;
 		this.position = this.pos;
+	},
+	watch: {
+		top() {
+			this.leftVal = this.left;
+			this.topVal = this.top;
+			this.position = this.pos;
+		},
 	},
 };
 </script>

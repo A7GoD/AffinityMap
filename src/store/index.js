@@ -40,31 +40,28 @@ const store = new Vuex.Store({
 	mutations: {
 		createHighlight(ctx, payload) {
 			let name = payload.group;
+
 			if (!(name in ctx.groupedData)) {
 				ctx.groupedData[name] = [];
 			}
 			let array = ctx.groupedData[name];
 			array.push(payload);
+
 			ctx.groupedData = { ...ctx.groupedData, [name]: [...array] };
 		},
+
 		delete(ctx, { id, group }) {
 			const newArray = ctx.groupedData[group].filter((x) => x.id !== id);
 			ctx.groupedData = { ...ctx.groupedData, [group]: [...newArray] };
 		},
+
 		createGroup(ctx, name) {
 			ctx.groupedData = { ...ctx.groupedData, [name]: [] };
 		},
+
 		toggleGroupMode(ctx) {
 			ctx.groupMode = !ctx.groupMode;
 		},
-
-		// updateData(ctx, { array, group }) {
-		// 	ctx.groupedData = { ...ctx.groupedData, [group]: [...array] };
-		// },
-
-		// updateGroup(ctx, { highlight, newGroup }) {
-
-		// },
 
 		edit(
 			ctx,
@@ -133,7 +130,19 @@ const store = new Vuex.Store({
 		changeGroup(ctx, { id, group }) {
 			let highlight = ctx.getters.getHighlight(id);
 			ctx.commit("delete", { id, group: highlight.group });
-			ctx.commit("createHighlight", { ...highlight, group: group });
+			highlight.group = group;
+			ctx.commit("createHighlight", highlight);
+		},
+
+		changePosition(ctx, { left, top, pos, id }) {
+			let highlight = ctx.getters.getHighlight(id);
+
+			highlight.left = left;
+			highlight.top = top;
+			highlight.pos = pos;
+
+			ctx.commit("delete", { id, group: highlight.group });
+			ctx.commit("createHighlight", highlight);
 		},
 	},
 	modules: {},

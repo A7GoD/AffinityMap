@@ -88,28 +88,42 @@
 <script>
 import store from "../store/index.js";
 export default {
-	props: ["color", "body", "group", "id", "user"],
+	props: [
+		"color",
+		"body",
+		"group",
+		"id",
+		"user",
+		"top",
+		"left",
+		"pos",
+		"date",
+	],
 	data: () => ({
 		items: null,
 		selected: null,
 		show: false,
 		newGroup: false,
 		newGroupName: null,
-		selectedColor: 0,
+		selectedColor: null,
 		content: null,
 		colors: [],
 	}),
 	methods: {
 		updateHighlight() {
-			let date = new Date();
 			store.commit("edit", {
 				id: this.id,
 				content: this.content,
 				oldGroup: this.group,
 				group: this.newGroup ? this.newGroupName : this.selected,
-				color: this.colors[this.selectedColor],
-				date,
+				color: this.selectedColor
+					? this.colors[this.selectedColor]
+					: this.color,
+				date: this.date,
 				user: this.user,
+				top: this.top,
+				left: this.left,
+				pos: this.pos,
 			});
 			this.show = false;
 		},

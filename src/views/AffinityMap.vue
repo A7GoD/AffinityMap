@@ -21,6 +21,7 @@
 						:left="note.left"
 						:pos="note.pos"
 						:user="note.user"
+						:date="note.date"
 					/>
 				</div>
 			</div>
