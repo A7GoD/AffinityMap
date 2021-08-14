@@ -1,5 +1,8 @@
 <template>
-	<div class="dflex justify-center zoom-btns">
+	<div
+		class="dflex justify-center zoom-btns"
+		:style="{ pointerEvents: selectMode ? 'none' : 'auto' }"
+	>
 		<v-btn color="secondary" :style="{ marginRight: '8px' }" @click="zoomIn"
 			>+</v-btn
 		>
@@ -12,6 +15,7 @@
 
 <script>
 export default {
+	props: ["selectMode"],
 	methods: {
 		zoomIn() {
 			this.$emit("zoomin");

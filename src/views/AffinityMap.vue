@@ -1,5 +1,10 @@
 <template>
-	<div class="affinity-map d-flex" @dragover.prevent @dragleave.prevent>
+	<div
+		class="affinity-map d-flex"
+		@dragover.prevent
+		@dragleave.prevent
+		ref="affinitymapz"
+	>
 		<div
 			v-if="!$store.state.groupMode"
 			class="selection-area"
@@ -40,6 +45,7 @@
 			</div>
 		</div>
 		<ZoomButtons
+			:selectMode="selectMode"
 			v-on:zoomin="zoomin"
 			v-on:zoomout="zoomout"
 			v-on:reset="reset"
@@ -63,15 +69,15 @@ export default {
 	methods: {
 		zoomout() {
 			this.zoom -= 10;
-			this.$refs["affinitymap"].style.zoom = `${this.zoom}%`;
+			this.$refs["affinitymapz"].style.zoom = `${this.zoom}%`;
 		},
 		zoomin() {
 			this.zoom += 10;
-			this.$refs["affinitymap"].style.zoom = `${this.zoom}%`;
+			this.$refs["affinitymapz"].style.zoom = `${this.zoom}%`;
 		},
 		reset() {
 			this.zoom = 100;
-			this.$refs["affinitymap"].style.zoom = `${this.zoom}%`;
+			this.$refs["affinitymapz"].style.zoom = `${this.zoom}%`;
 		},
 		dragStart(e) {
 			this.dragS = true;
